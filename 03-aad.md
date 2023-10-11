@@ -26,7 +26,7 @@ In the prior step, you [generated the user-facing TLS certificate](./02-ca-certi
 1. Create the first Azure AD group that will map the Kubernetes Cluster Role Admin. If you already have a security group appropriate for cluster admins, consider using that group and skipping this step. If using your own group, you will need to update group object names throughout the reference implementation.
 
    ```bash
-   export K8S_RBAC_AAD_PROFILE_ADMIN_GROUP_OBJECTID=$(az ad group create --display-name aad-to-dronedelivery-cluster-admin --mail-nickname aad-to-dronedelivery-cluster-admin --query id -o tsv)
+   export K8S_RBAC_AAD_PROFILE_ADMIN_GROUP_OBJECTID=$(az ad group create --display-name aad-to-openfleet-cluster-admin --mail-nickname aad-to-openfleet-cluster-admin --query id -o tsv)
    ```
 
 1. Create a break-glass Cluster Admin user for the Fabrikam Drone Delivery AKS cluster.
@@ -35,7 +35,7 @@ In the prior step, you [generated the user-facing TLS certificate](./02-ca-certi
 
    ```bash
    export K8S_RBAC_AAD_PROFILE_TENANT_DOMAIN_NAME=$(az ad signed-in-user show --query 'userPrincipalName' -o tsv | cut -d '@' -f 2 | sed 's/\"//')
-   export AKS_ADMIN_OBJECTID=$(az ad user create --display-name=dronedelivery-admin --user-principal-name dronedelivery-admin@${K8S_RBAC_AAD_PROFILE_TENANT_DOMAIN_NAME} --force-change-password-next-sign-in --password ChangeMeDroneDeliveryAdminChangeMe! --query id -o tsv)
+   export AKS_ADMIN_OBJECTID=$(az ad user create --display-name=openfleet-admin --user-principal-name openfleet-admin@${K8S_RBAC_AAD_PROFILE_TENANT_DOMAIN_NAME} --force-change-password-next-sign-in --password ChangeMeOpenFleetAdminChangeMe! --query id -o tsv)
    ```
 
 1. Add the new admin user to the new security group to grant the Kubernetes Cluster Admin role.
@@ -47,7 +47,7 @@ In the prior step, you [generated the user-facing TLS certificate](./02-ca-certi
    >
 
    ```bash
-   az ad group member add --group aad-to-dronedelivery-cluster-admin --member-id $AKS_ADMIN_OBJECTID
+   az ad group member add --group aad-to-openfleet-cluster-admin --member-id $AKS_ADMIN_OBJECTID
    ```
 
    The value stored in the $AKS_ADMIN_OBJECTID is the id of the newly created user. This value is needed when creating the AKS cluster for establishing proper cluster RBAC role bindings.
